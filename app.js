@@ -13,7 +13,7 @@ let startX, startY;
 
 /* ================= RESIZE ================= */
 
-function resizeAll(){
+function resizeCanvas(){
 [pitchCanvas, drawCanvas].forEach(c=>{
 c.width = c.offsetWidth;
 c.height = c.offsetHeight;
@@ -22,8 +22,8 @@ drawPitch();
 if(basePositions.length) resetFormation();
 }
 
-window.addEventListener("resize", resizeAll);
-resizeAll();
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 
 /* ================= DRAW PITCH ================= */
 
@@ -56,18 +56,17 @@ pitchCtx.strokeRect(w-w*0.07,h*0.4,w*0.07,h*0.2);
 /* ================= PLAYERS ================= */
 
 function createPlayer(label,color){
-const p = document.createElement("div");
+const p=document.createElement("div");
 p.className="player";
 p.style.background=color;
 p.innerHTML=label+"<span>Jméno</span>";
-
-enableDrag(p);
 
 p.addEventListener("dblclick",()=>{
 const name=prompt("Zadej jméno:");
 if(name) p.querySelector("span").innerText=name;
 });
 
+enableDrag(p);
 playersLayer.appendChild(p);
 players.push(p);
 }
@@ -105,26 +104,25 @@ bench.appendChild(b);
 
 /* ================= DRAWING ================= */
 
-document.getElementById("arrowBtn").onclick=()=>drawingMode="arrow";
-document.getElementById("zoneBtn").onclick=()=>drawingMode="zone";
-document.getElementById("clearBtn").onclick=()=>{
+document.getElementById("arrowBtn").addEventListener("click",()=>drawingMode="arrow");
+document.getElementById("zoneBtn").addEventListener("click",()=>drawingMode="zone");
+document.getElementById("clearBtn").addEventListener("click",()=>{
 drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
 drawingMode=null;
-};
+});
 
 drawCanvas.addEventListener("pointerdown",e=>{
 if(!drawingMode) return;
-const rect = drawCanvas.getBoundingClientRect();
-startX = e.clientX - rect.left;
-startY = e.clientY - rect.top;
+const rect=drawCanvas.getBoundingClientRect();
+startX=e.clientX-rect.left;
+startY=e.clientY-rect.top;
 });
 
 drawCanvas.addEventListener("pointerup",e=>{
 if(!drawingMode) return;
-
-const rect = drawCanvas.getBoundingClientRect();
-const endX = e.clientX - rect.left;
-const endY = e.clientY - rect.top;
+const rect=drawCanvas.getBoundingClientRect();
+const endX=e.clientX-rect.left;
+const endY=e.clientY-rect.top;
 
 drawCtx.strokeStyle="yellow";
 drawCtx.fillStyle="yellow";
@@ -142,10 +140,10 @@ drawingMode=null;
 });
 
 function drawArrow(x1,y1,x2,y2){
-const headLength = 15;
-const dx = x2 - x1;
-const dy = y2 - y1;
-const angle = Math.atan2(dy, dx);
+const headLength=15;
+const dx=x2-x1;
+const dy=y2-y1;
+const angle=Math.atan2(dy,dx);
 
 drawCtx.beginPath();
 drawCtx.moveTo(x1,y1);
@@ -154,14 +152,10 @@ drawCtx.stroke();
 
 drawCtx.beginPath();
 drawCtx.moveTo(x2,y2);
-drawCtx.lineTo(
-x2 - headLength * Math.cos(angle - Math.PI/6),
-y2 - headLength * Math.sin(angle - Math.PI/6)
-);
-drawCtx.lineTo(
-x2 - headLength * Math.cos(angle + Math.PI/6),
-y2 - headLength * Math.sin(angle + Math.PI/6)
-);
+drawCtx.lineTo(x2-headLength*Math.cos(angle-Math.PI/6),
+y2-headLength*Math.sin(angle-Math.PI/6));
+drawCtx.lineTo(x2-headLength*Math.cos(angle+Math.PI/6),
+y2-headLength*Math.sin(angle+Math.PI/6));
 drawCtx.closePath();
 drawCtx.fill();
 }
@@ -169,17 +163,21 @@ drawCtx.fill();
 /* ================= FORMATIONS ================= */
 
 const formations={
-"433":[[0.08,0.5],[0.25,0.15],[0.25,0.35],[0.25,0.65],[0.25,0.85],[0.5,0.25],[0.5,0.5],[0.5,0.75],[0.75,0.2],[0.75,0.5],[0.75,0.8]]
+"433":[[0.08,0.5],[0.25,0.15],[0.25,0.35],[0.25,0.65],[0.25,0.85],[0.5,0.25],[0.5,0.5],[0.5,0.75],[0.75,0.2],[0.75,0.5],[0.75,0.8]],
+"442":[[0.08,0.5],[0.25,0.15],[0.25,0.35],[0.25,0.65],[0.25,0.85],[0.5,0.2],[0.5,0.4],[0.5,0.6],[0.5,0.8],[0.75,0.35],[0.75,0.65]],
+"352":[[0.08,0.5],[0.25,0.3],[0.25,0.5],[0.25,0.7],[0.5,0.1],[0.5,0.3],[0.5,0.5],[0.5,0.7],[0.5,0.9],[0.75,0.35],[0.75,0.65]],
+"4231":[[0.08,0.5],[0.25,0.15],[0.25,0.35],[0.25,0.65],[0.25,0.85],[0.45,0.35],[0.45,0.65],[0.65,0.2],[0.65,0.5],[0.65,0.8],[0.85,0.5]]
 };
 
-document.getElementById("applyBtn").onclick=()=>{
-basePositions=formations["433"];
+document.getElementById("applyBtn").addEventListener("click",()=>{
+basePositions=formations[document.getElementById("formation").value];
 resetFormation();
-};
+});
 
-document.getElementById("resetBtn").onclick=resetFormation;
+document.getElementById("resetBtn").addEventListener("click",resetFormation);
 
 function resetFormation(){
+if(!basePositions.length) return;
 const w=playersLayer.offsetWidth;
 const h=playersLayer.offsetHeight;
 players.forEach((p,i)=>{
@@ -187,3 +185,21 @@ p.style.left=(basePositions[i][0]*w)+"px";
 p.style.top=(basePositions[i][1]*h)+"px";
 });
 }
+
+/* ================= EXPORT ================= */
+
+document.getElementById("pngBtn").addEventListener("click",async()=>{
+const img=await html2canvas(document.getElementById("exportArea"));
+const link=document.createElement("a");
+link.download="lineup.png";
+link.href=img.toDataURL();
+link.click();
+});
+
+document.getElementById("pdfBtn").addEventListener("click",async()=>{
+const { jsPDF }=window.jspdf;
+const img=await html2canvas(document.getElementById("exportArea"));
+const pdf=new jsPDF("landscape");
+pdf.addImage(img.toDataURL("image/png"),"PNG",10,10,270,150);
+pdf.save("lineup.pdf");
+});
