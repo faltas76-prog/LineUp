@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TacticalPad UEFA</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<h1>TacticalPad – UEFA Lineup</h1>
+
+<div class="controls">
+<button onclick="exportPNG()">Uložit PNG</button>
+<button onclick="exportPDF()">Uložit PDF</button>
+</div>
+
+<div id="exportArea">
+<div class="pitch" id="pitch"></div>
+
+<div class="bench" id="bench">
+<h3>Lavička</h3>
+</div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
