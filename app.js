@@ -18,13 +18,34 @@ if(basePositions.length) resetFormation();
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
+/* ================= TRÁVA (FAČR STYL) ================= */
+
+function drawGrass(w,h){
+
+const stripeCount = 12;
+const stripeWidth = w / stripeCount;
+
+for(let i=0;i<stripeCount;i++){
+
+ctx.fillStyle = i%2===0 ? "#117a2d" : "#149b3a";
+ctx.fillRect(i*stripeWidth,0,stripeWidth,h);
+
+}
+
+}
+
 /* ================= UEFA PITCH ================= */
 
 function drawPitch(){
+
 const w = pitchCanvas.width;
 const h = pitchCanvas.height;
 
 ctx.clearRect(0,0,w,h);
+
+/* ===== TRÁVA ===== */
+drawGrass(w,h);
+
 ctx.strokeStyle="white";
 ctx.lineWidth=2;
 
@@ -42,23 +63,23 @@ ctx.beginPath();
 ctx.arc(w/2,h/2,h*0.15,0,2*Math.PI);
 ctx.stroke();
 
-/* ===== PENALTY AREA ===== */
+/* ===== ROZMĚRY ===== */
 
-const penaltySpotDist = w*0.11;      // ~11m
-const bigBoxDepth = w*0.16;          // ~16.5m
+const penaltySpotDist = w*0.11;
+const bigBoxDepth = w*0.16;
 const bigBoxHeight = h*0.5;
-const smallBoxDepth = w*0.06;        // ~5.5m
+const smallBoxDepth = w*0.06;
 const smallBoxHeight = h*0.2;
 
-/* big box */
+/* ===== VELKÉ VÁPNO ===== */
 ctx.strokeRect(0,h*0.25,bigBoxDepth,bigBoxHeight);
 ctx.strokeRect(w-bigBoxDepth,h*0.25,bigBoxDepth,bigBoxHeight);
 
-/* small box */
+/* ===== MALÉ VÁPNO ===== */
 ctx.strokeRect(0,h*0.4,smallBoxDepth,smallBoxHeight);
 ctx.strokeRect(w-smallBoxDepth,h*0.4,smallBoxDepth,smallBoxHeight);
 
-/* penalty spots */
+/* ===== PENALTY SPOT ===== */
 ctx.beginPath();
 ctx.arc(penaltySpotDist,h/2,3,0,2*Math.PI);
 ctx.fillStyle="white";
@@ -68,71 +89,48 @@ ctx.beginPath();
 ctx.arc(w-penaltySpotDist,h/2,3,0,2*Math.PI);
 ctx.fill();
 
-/* ===== PŘESNĚ OŘÍZNUTÝ PENALTOVÝ OBLOUK ===== */
+/* ===== OŘÍZNUTÝ OBLOUK ===== */
 
-const arcRadius = h * 0.15;         // 9,15m
-const leftPenaltyX = penaltySpotDist;
-const rightPenaltyX = w - penaltySpotDist;
-const cy = h / 2;
+const arcRadius = h*0.15;
+const cy = h/2;
 
-/* ---- LEVÁ STRANA ---- */
-
-const leftBoxEdge = bigBoxDepth;    // hrana velkého vápna
-
-// průnik kružnice s vertikální přímkou x = leftBoxEdge
-const dxLeft = leftBoxEdge - leftPenaltyX;
+/* levá strana */
+const dxLeft = bigBoxDepth - penaltySpotDist;
 const dyLeft = Math.sqrt(arcRadius**2 - dxLeft**2);
 
-// úhly průniku
 const angleLeftTop = Math.atan2(-dyLeft, dxLeft);
 const angleLeftBottom = Math.atan2(dyLeft, dxLeft);
 
-// kreslíme pouze část mimo vápno
 ctx.beginPath();
-ctx.arc(
-leftPenaltyX,
-cy,
-arcRadius,
-angleLeftTop,
-angleLeftBottom,
-false
-);
+ctx.arc(penaltySpotDist,cy,arcRadius,angleLeftTop,angleLeftBottom,false);
 ctx.stroke();
 
-/* ---- PRAVÁ STRANA ---- */
-
-const rightBoxEdge = w - bigBoxDepth;
-
-const dxRight = rightBoxEdge - rightPenaltyX;
+/* pravá strana */
+const rightPenaltyX = w - penaltySpotDist;
+const dxRight = (w-bigBoxDepth) - rightPenaltyX;
 const dyRight = Math.sqrt(arcRadius**2 - dxRight**2);
 
 const angleRightTop = Math.atan2(-dyRight, dxRight);
 const angleRightBottom = Math.atan2(dyRight, dxRight);
 
 ctx.beginPath();
-ctx.arc(
-rightPenaltyX,
-cy,
-arcRadius,
-angleRightBottom,
-angleRightTop,
-false
-);
+ctx.arc(rightPenaltyX,cy,arcRadius,angleRightBottom,angleRightTop,false);
 ctx.stroke();
 
-/* corner arcs */
+/* ===== ROHOVÉ OBLOUKY ===== */
 const r=20;
 ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI/2); ctx.stroke();
 ctx.beginPath(); ctx.arc(w,0,r,Math.PI/2,Math.PI); ctx.stroke();
 ctx.beginPath(); ctx.arc(0,h,r,Math.PI*1.5,0); ctx.stroke();
 ctx.beginPath(); ctx.arc(w,h,r,Math.PI,Math.PI*1.5); ctx.stroke();
 
-/* goals */
+/* ===== BRANKY ===== */
 ctx.fillRect(-6,h*0.4,6,h*0.2);
 ctx.fillRect(w,h*0.4,6,h*0.2);
+
 }
 
-/* ================= PLAYER CREATION ================= */
+/* ================= HRÁČI ================= */
 
 function createPlayer(label,color,isBench=false){
 
@@ -149,22 +147,22 @@ name.innerText="Jméno";
 p.appendChild(number);
 p.appendChild(name);
 
-/* EDIT NAME */
+/* EDIT JMÉNA */
 name.addEventListener("click",e=>{
 e.stopPropagation();
 const newName=prompt("Zadej jméno hráče:");
 if(newName) name.innerText=newName;
 });
 
-/* SELECT / SWAP */
+/* VÝBĚR / STŘÍDÁNÍ */
 p.addEventListener("click",()=>{
 if(!isBench){
 selectedFieldPlayer=p;
-highlightSelection();
+highlight();
 }else if(selectedFieldPlayer){
-swapPlayers(selectedFieldPlayer,p);
+swap(selectedFieldPlayer,p);
 selectedFieldPlayer=null;
-highlightSelection();
+highlight();
 }
 });
 
@@ -188,20 +186,20 @@ document.addEventListener("pointerup",
 return p;
 }
 
-function highlightSelection(){
+function highlight(){
 players.forEach(p=>p.classList.remove("selected"));
 if(selectedFieldPlayer) selectedFieldPlayer.classList.add("selected");
 }
 
-function swapPlayers(a,b){
-[a.children[0].innerText, b.children[0].innerText] =
-[b.children[0].innerText, a.children[0].innerText];
+function swap(a,b){
+[a.children[0].innerText,b.children[0].innerText]=
+[b.children[0].innerText,a.children[0].innerText];
 
-[a.children[1].innerText, b.children[1].innerText] =
-[b.children[1].innerText, a.children[1].innerText];
+[a.children[1].innerText,b.children[1].innerText]=
+[b.children[1].innerText,a.children[1].innerText];
 }
 
-/* ================= CREATE TEAM ================= */
+/* ================= VYTVOŘENÍ TÝMU ================= */
 
 const gk=createPlayer("GK","yellow");
 playersLayer.appendChild(gk);
@@ -217,7 +215,7 @@ for(let i=1;i<=5;i++){
 bench.appendChild(createPlayer(i,"blue",true));
 }
 
-/* ================= FORMATIONS ================= */
+/* ================= ROZESTAVENÍ ================= */
 
 const formations={
 "433":[[0.08,0.5],[0.25,0.15],[0.25,0.35],[0.25,0.65],[0.25,0.85],
@@ -239,8 +237,7 @@ const formations={
 };
 
 document.getElementById("applyBtn").onclick=()=>{
-const formationKey=document.getElementById("formation").value;
-basePositions=formations[formationKey];
+basePositions=formations[document.getElementById("formation").value];
 resetFormation();
 };
 
