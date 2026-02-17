@@ -32,7 +32,6 @@ aspect-ratio:105/68;
 }
 
 #pitchCanvas,
-#drawCanvas,
 #playersLayer{
 position:absolute;
 top:0;
@@ -50,17 +49,12 @@ z-index:1;
 z-index:2;
 }
 
-#drawCanvas{
-z-index:3;
-pointer-events:auto;
-}
-
 /* ===== PLAYERS ===== */
 
 .player{
 position:absolute;
-width:40px;
-height:40px;
+width:45px;
+height:45px;
 border-radius:50%;
 display:flex;
 align-items:center;
@@ -69,11 +63,11 @@ flex-direction:column;
 font-weight:bold;
 color:white;
 cursor:pointer;
-touch-action:none;
+user-select:none;
 }
 
 .player span{
-font-size:9px;
+font-size:10px;
 }
 
 /* ===== BENCH ===== */
@@ -81,15 +75,14 @@ font-size:9px;
 .bench{
 display:flex;
 justify-content:center;
-gap:10px;
+gap:12px;
 margin:20px 0;
 flex-wrap:wrap;
-min-height:70px;
 }
 
 .bench-player{
-width:50px;
-height:50px;
+width:55px;
+height:55px;
 border-radius:50%;
 background:blue;
 display:flex;
