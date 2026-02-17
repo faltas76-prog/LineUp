@@ -21,13 +21,7 @@ border-radius:6px;
 cursor:pointer;
 }
 
-#exportArea{
-display:flex;
-flex-direction:column;
-align-items:center;
-}
-
-/* ================= PITCH ================= */
+/* ===== PITCH ===== */
 
 .pitch-wrapper{
 position:relative;
@@ -58,14 +52,15 @@ z-index:2;
 
 #drawCanvas{
 z-index:3;
+pointer-events:auto;
 }
 
-/* ================= PLAYERS ================= */
+/* ===== PLAYERS ===== */
 
 .player{
 position:absolute;
-width:clamp(30px,4vw,50px);
-height:clamp(30px,4vw,50px);
+width:40px;
+height:40px;
 border-radius:50%;
 display:flex;
 align-items:center;
@@ -78,22 +73,23 @@ touch-action:none;
 }
 
 .player span{
-font-size:10px;
+font-size:9px;
 }
 
-/* ================= BENCH ================= */
+/* ===== BENCH ===== */
 
 .bench{
 display:flex;
 justify-content:center;
 gap:10px;
-margin-top:20px;
+margin:20px 0;
 flex-wrap:wrap;
+min-height:70px;
 }
 
 .bench-player{
-width:clamp(40px,6vw,60px);
-height:clamp(40px,6vw,60px);
+width:50px;
+height:50px;
 border-radius:50%;
 background:blue;
 display:flex;
