@@ -211,3 +211,15 @@ const pdf=new jsPDF("landscape");
 pdf.addImage(imgData,"PNG",10,10,270,150);
 pdf.save("lineup.pdf");
 }
+
+function resetFormation(){
+const w = pitch.clientWidth;
+const h = pitch.clientHeight;
+
+players.forEach((p,i)=>{
+const x = basePositions[i][0]*w;
+const y = basePositions[i][1]*h;
+p.style.left = x+"px";
+p.style.top = y+"px";
+});
+}
