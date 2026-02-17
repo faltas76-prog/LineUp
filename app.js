@@ -72,34 +72,57 @@ ctx.fill();
 
 /* ===== SPRÁVNÝ PENALTOVÝ PŮLKRUH (D) ===== */
 
-const arcRadius = h * 0.15;   // 9,15m přepočet
+/* ===== PŘESNĚ OŘÍZNUTÝ PENALTOVÝ OBLOUK ===== */
+
+const arcRadius = h * 0.15;         // 9,15m
 const leftPenaltyX = penaltySpotDist;
 const rightPenaltyX = w - penaltySpotDist;
+const cy = h / 2;
 
-/* Levý půlkruh – otočený doprava */
+/* ---- LEVÁ STRANA ---- */
+
+const leftBoxEdge = bigBoxDepth;    // hrana velkého vápna
+
+// průnik kružnice s vertikální přímkou x = leftBoxEdge
+const dxLeft = leftBoxEdge - leftPenaltyX;
+const dyLeft = Math.sqrt(arcRadius**2 - dxLeft**2);
+
+// úhly průniku
+const angleLeftTop = Math.atan2(-dyLeft, dxLeft);
+const angleLeftBottom = Math.atan2(dyLeft, dxLeft);
+
+// kreslíme pouze část mimo vápno
 ctx.beginPath();
 ctx.arc(
 leftPenaltyX,
-h/2,
+cy,
 arcRadius,
--Math.PI/2,
-Math.PI/2,
+angleLeftTop,
+angleLeftBottom,
 false
 );
 ctx.stroke();
 
-/* Pravý půlkruh – otočený doleva */
+/* ---- PRAVÁ STRANA ---- */
+
+const rightBoxEdge = w - bigBoxDepth;
+
+const dxRight = rightBoxEdge - rightPenaltyX;
+const dyRight = Math.sqrt(arcRadius**2 - dxRight**2);
+
+const angleRightTop = Math.atan2(-dyRight, dxRight);
+const angleRightBottom = Math.atan2(dyRight, dxRight);
+
 ctx.beginPath();
 ctx.arc(
 rightPenaltyX,
-h/2,
+cy,
 arcRadius,
-Math.PI/2,
--Math.PI/2,
+angleRightBottom,
+angleRightTop,
 false
 );
 ctx.stroke();
-
 
 /* corner arcs */
 const r=20;
