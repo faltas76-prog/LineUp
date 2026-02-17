@@ -18,30 +18,13 @@ if(basePositions.length) resetFormation();
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-/* ===========tráva s pruhy ==========*/
-function drawGrass(w, h) {
-
-const stripeCount = 10;   // počet pruhů
-const stripeWidth = w / stripeCount;
-
-for (let i = 0; i < stripeCount; i++) {
-
-ctx.fillStyle = i % 2 === 0 
-? "#117a2d"     // tmavší zelená
-: "#149b3a";    // světlejší zelená
-
-ctx.fillRect(i * stripeWidth, 0, stripeWidth, h);
-}
-
-}
-
 /* ================= UEFA PITCH ================= */
 
 function drawPitch(){
 const w = pitchCanvas.width;
 const h = pitchCanvas.height;
 
-ctx.drawGrass(w, h);
+ctx.clearRect(0,0,w,h);
 ctx.strokeStyle="white";
 ctx.lineWidth=2;
 
