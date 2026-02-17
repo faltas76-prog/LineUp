@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b6623">
 <title>TacticalPad PRO</title>
 
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -23,8 +25,11 @@
 <option value="4231">4-2-3-1</option>
 </select>
 
-<button id="applyBtn">Použít rozestavení</button>
-<button id="resetBtn">Zarovnat</button>
+<button id="applyBtn">Rozestavení</button>
+<button id="resetBtn">Reset</button>
+<button id="drawArrow">Šipka</button>
+<button id="drawZone">Zóna</button>
+<button id="clearDraw">Vymazat kreslení</button>
 <button id="pngBtn">PNG</button>
 <button id="pdfBtn">PDF</button>
 </div>
@@ -32,6 +37,7 @@
 <div id="exportArea">
 <div class="pitch-wrapper">
 <canvas id="pitchCanvas"></canvas>
+<canvas id="drawCanvas"></canvas>
 <div id="playersLayer"></div>
 </div>
 
