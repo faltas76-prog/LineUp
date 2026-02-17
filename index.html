@@ -13,6 +13,14 @@
 <h1>TacticalPad – UEFA Lineup</h1>
 
 <div class="controls">
+  <select id="formationSelect">
+<option value="433">4-3-3</option>
+<option value="442">4-4-2</option>
+<option value="352">3-5-2</option>
+<option value="4231">4-2-3-1</option>
+</select>
+
+<button onclick="applyFormation()">Použít rozestavení</button>
 <button onclick="exportPNG()">Uložit PNG</button>
 <button onclick="exportPDF()">Uložit PDF</button>
 </div>
