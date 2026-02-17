@@ -105,18 +105,26 @@ return p;
 
 // Drag & Drop
 function enableDrag(el){
-el.onmousedown=function(e){
-let shiftX=e.clientX-el.getBoundingClientRect().left;
-let shiftY=e.clientY-el.getBoundingClientRect().top;
 
-function moveAt(pageX,pageY){
-el.style.left=pageX-pitch.offsetLeft-shiftX+"px";
-el.style.top=pageY-pitch.offsetTop-shiftY+"px";
+function moveAt(clientX, clientY){
+const rect = pitch.getBoundingClientRect();
+el.style.left = (clientX - rect.left - el.offsetWidth/2) + "px";
+el.style.top = (clientY - rect.top - el.offsetHeight/2) + "px";
 }
 
-function onMouseMove(e){
-moveAt(e.pageX,e.pageY);
+function onPointerMove(e){
+moveAt(e.clientX, e.clientY);
 }
+
+el.addEventListener("pointerdown", function(e){
+e.preventDefault();
+document.addEventListener("pointermove", onPointerMove);
+document.addEventListener("pointerup", function(){
+document.removeEventListener("pointermove", onPointerMove);
+},{once:true});
+});
+}
+
 
 document.addEventListener("mousemove",onMouseMove);
 
@@ -223,3 +231,10 @@ p.style.left = x+"px";
 p.style.top = y+"px";
 });
 }
+
+window.addEventListener("resize", () => {
+if(basePositions.length){
+resetFormation();
+}
+});
+
