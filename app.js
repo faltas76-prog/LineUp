@@ -72,7 +72,7 @@ ctx.fill();
 
 /* ===== SPRÁVNÝ PENALTOVÝ PŮLKRUH (D) ===== */
 
-const arcRadius = h * 0.15;   // 9,15m přepočet
+const arcRadius = h * 0.10;   // 9,15m přepočet
 const leftPenaltyX = penaltySpotDist;
 const rightPenaltyX = w - penaltySpotDist;
 
