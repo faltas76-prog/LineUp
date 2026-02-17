@@ -70,17 +70,36 @@ ctx.fill();
 
 /* ===== CORRECT D ARC ===== */
 
-const arcRadius = h*0.15; // 9.15m scaled
+/* ===== SPRÁVNÝ PENALTOVÝ PŮLKRUH (D) ===== */
 
+const arcRadius = h * 0.15;   // 9,15m přepočet
+const leftPenaltyX = penaltySpotDist;
+const rightPenaltyX = w - penaltySpotDist;
+
+/* Levý půlkruh – otočený doprava */
 ctx.beginPath();
-ctx.arc(penaltySpotDist,h/2,arcRadius,
-Math.PI*1.2,Math.PI*1.8);
+ctx.arc(
+leftPenaltyX,
+h/2,
+arcRadius,
+-Math.PI/2,
+Math.PI/2,
+false
+);
 ctx.stroke();
 
+/* Pravý půlkruh – otočený doleva */
 ctx.beginPath();
-ctx.arc(w-penaltySpotDist,h/2,arcRadius,
-Math.PI*0.2,Math.PI*0.8);
+ctx.arc(
+rightPenaltyX,
+h/2,
+arcRadius,
+Math.PI/2,
+-Math.PI/2,
+false
+);
 ctx.stroke();
+
 
 /* corner arcs */
 const r=20;
