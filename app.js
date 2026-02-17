@@ -121,18 +121,17 @@ startY = e.clientY - rect.top;
 
 drawCanvas.addEventListener("pointerup",e=>{
 if(!drawingMode) return;
+
 const rect = drawCanvas.getBoundingClientRect();
 const endX = e.clientX - rect.left;
 const endY = e.clientY - rect.top;
 
 drawCtx.strokeStyle="yellow";
+drawCtx.fillStyle="yellow";
 drawCtx.lineWidth=3;
 
 if(drawingMode==="arrow"){
-drawCtx.beginPath();
-drawCtx.moveTo(startX,startY);
-drawCtx.lineTo(endX,endY);
-drawCtx.stroke();
+drawArrow(startX,startY,endX,endY);
 }
 
 if(drawingMode==="zone"){
@@ -142,17 +141,39 @@ drawCtx.strokeRect(startX,startY,endX-startX,endY-startY);
 drawingMode=null;
 });
 
+function drawArrow(x1,y1,x2,y2){
+const headLength = 15;
+const dx = x2 - x1;
+const dy = y2 - y1;
+const angle = Math.atan2(dy, dx);
+
+drawCtx.beginPath();
+drawCtx.moveTo(x1,y1);
+drawCtx.lineTo(x2,y2);
+drawCtx.stroke();
+
+drawCtx.beginPath();
+drawCtx.moveTo(x2,y2);
+drawCtx.lineTo(
+x2 - headLength * Math.cos(angle - Math.PI/6),
+y2 - headLength * Math.sin(angle - Math.PI/6)
+);
+drawCtx.lineTo(
+x2 - headLength * Math.cos(angle + Math.PI/6),
+y2 - headLength * Math.sin(angle + Math.PI/6)
+);
+drawCtx.closePath();
+drawCtx.fill();
+}
+
 /* ================= FORMATIONS ================= */
 
 const formations={
-"433":[[0.08,0.5],[0.25,0.15],[0.25,0.35],[0.25,0.65],[0.25,0.85],[0.5,0.25],[0.5,0.5],[0.5,0.75],[0.75,0.2],[0.75,0.5],[0.75,0.8]],
-"442":[[0.08,0.5],[0.25,0.15],[0.25,0.35],[0.25,0.65],[0.25,0.85],[0.5,0.2],[0.5,0.4],[0.5,0.6],[0.5,0.8],[0.75,0.35],[0.75,0.65]],
-"352":[[0.08,0.5],[0.25,0.3],[0.25,0.5],[0.25,0.7],[0.5,0.1],[0.5,0.3],[0.5,0.5],[0.5,0.7],[0.5,0.9],[0.75,0.35],[0.75,0.65]],
-"4231":[[0.08,0.5],[0.25,0.15],[0.25,0.35],[0.25,0.65],[0.25,0.85],[0.45,0.35],[0.45,0.65],[0.65,0.2],[0.65,0.5],[0.65,0.8],[0.85,0.5]]
+"433":[[0.08,0.5],[0.25,0.15],[0.25,0.35],[0.25,0.65],[0.25,0.85],[0.5,0.25],[0.5,0.5],[0.5,0.75],[0.75,0.2],[0.75,0.5],[0.75,0.8]]
 };
 
 document.getElementById("applyBtn").onclick=()=>{
-basePositions = formations[document.getElementById("formation").value];
+basePositions=formations["433"];
 resetFormation();
 };
 
@@ -166,21 +187,3 @@ p.style.left=(basePositions[i][0]*w)+"px";
 p.style.top=(basePositions[i][1]*h)+"px";
 });
 }
-
-/* ================= EXPORT ================= */
-
-document.getElementById("pngBtn").onclick=async()=>{
-const img = await html2canvas(document.getElementById("exportArea"));
-const link=document.createElement("a");
-link.download="lineup.png";
-link.href=img.toDataURL();
-link.click();
-};
-
-document.getElementById("pdfBtn").onclick=async()=>{
-const { jsPDF }=window.jspdf;
-const img = await html2canvas(document.getElementById("exportArea"));
-const pdf=new jsPDF("landscape");
-pdf.addImage(img.toDataURL("image/png"),"PNG",10,10,270,150);
-pdf.save("lineup.pdf");
-};
